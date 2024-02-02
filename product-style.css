@@ -1,0 +1,16 @@
+.product-container {
+    display: flex;
+    align-items: flex-start;
+  }
+  .product-image {
+    flex: 0 0 40%;
+    margin-right: 20px;
+  }
+  .product-details {
+    flex: 1;
+  }
+  .product-description {
+    display: block;
+    clear: both;
+    margin-top: 20px;
+  }
