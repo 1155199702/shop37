@@ -1,18 +1,15 @@
 package com.example.demo.entity;
 
-import com.baomidou.mybatisplus.annotation.TableId;
-import com.baomidou.mybatisplus.annotation.TableName;
 import lombok.Data;
+import org.springframework.web.multipart.MultipartFile;
 
 @Data
-@TableName("product")
-public class Product {
-    @TableId
+public class ProductForm {
     private int pid;
     private int catid;
     private String name;
     private double price;
     private String description;
     private String imgname;
-
+    private MultipartFile img;
 }

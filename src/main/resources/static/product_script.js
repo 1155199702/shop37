@@ -24,14 +24,15 @@
 //       description: 'The id of this product is 3.'
 //     },
 //   ];
-
+let url='http://54.251.177.52:8080'
 let productDetail=document.getElementById("product-detail")
 let searchParams = new URLSearchParams(window.location.search);
 // get the requiry parameter and parse it to int 
 let pid = parseInt(searchParams.get('pid'));
+console.log(pid);
 
 let product=undefined;
-let productURL='http://127.0.0.1:80/product/getById/'+pid;
+let productURL=url+'/product/getById/'+pid;
 console.log(productURL);
 //get the product from backend
 fetch(productURL)
@@ -39,7 +40,7 @@ fetch(productURL)
     .then(data => {
         // 将获取到的数据存储在category变量中
         product = data;
-        product.image="apple.jpg";
+        product.image="imgs/"+product.imgname;
         //在类别列表中显示类别名称
         productDetail.innerHTML = `
             <div class="container">

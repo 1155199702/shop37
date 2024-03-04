@@ -1,9 +1,11 @@
-
+let url='http://54.251.177.52:8080'
+//updated
 //加载product类别列表
 let categories=undefined;
 let products =undefined;
-var categoryURL='http://127.0.0.1:80/category/get';
-var productURL = 'http://127.0.0.1:80/product/get';
+
+var categoryURL=url+'/category/get';
+var productURL = url+'/product/get';
 //展示在页面上
 let productList = document.getElementById('product-list');
 let productPage = document.getElementById("productPage")
@@ -55,12 +57,13 @@ function showProductList(category) {
     console.log(list_id);
 
     //从后端获取产品信息
-    fetch('http://127.0.0.1:80/product/getByCatId/'+list_id)
+    fetch(url+'/product/getByCatId/'+list_id)
         .then(response => response.json()) // 将响应解析为JSON格式
         .then(data => {
             // 将获取到的数据存储在product变量中
             products = data;
             console.log(products);
+
             //展示在页面上
             let productList = document.getElementById('product-list');
             let productPage = document.getElementById("productPage")
@@ -71,10 +74,11 @@ function showProductList(category) {
 
             productList.innerHTML = '';
             products.forEach(product => {
+                let imgPath="imgs/"+product.imgname;
                 const productItem = document.createElement('div');
                 productItem.className = 'product';
                 productItem.innerHTML = `
-      <img src="apple.jpg" alt="apple.jpg" class="product-img" onclick="jumpToProductDetail(${product.pid},${product.name})">
+      <img src="${imgPath}" alt="apple.jpg" class="product-img" onclick="jumpToProductDetail(${product.pid},${product.name})">
       <div class="product-name " id="product${product.name}" onclick="jumpToProductDetail(${product.pid},'${product.name}')"><a href="#">${product.name}</a></div>
       <div class="product-price">$${product.price}</div>
       <button type="button" class="btn btn-primary" onclick="productDetail(${product.pid})">Add to Cart</button>
@@ -118,10 +122,10 @@ function jumpToProductDetail(productId,productName) {
 
 
      // construct the url
-     var url = 'http://127.0.0.1:80/ProductDetail.html?pid=' + encodeURIComponent(productId);
-    console.log(url);
+     var url_detail = url+'/ProductDetail.html?pid=' + encodeURIComponent(productId);
+    console.log(url_detail);
      // reload product detail page
-     productPage.src = url;
+     productPage.src = url_detail;
 
      //set product detail visible
      productPage.style.display='block'
