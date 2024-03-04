@@ -1,4 +1,4 @@
-
+let url='http://54.251.177.52:8080'
 //selected catid when delete
 var deleteCatId=undefined;
 function fillEditForm(button) {
@@ -37,9 +37,9 @@ function fillEditForm(button) {
 }
 
 //get category info
-var url = 'http://127.0.0.1:80/category/get';
+var caturl = url+'/category/get';
 var category;
-fetch(url)
+fetch(caturl)
     .then(response => response.json()) // 将响应解析为JSON格式
     .then(data => {
         // 将获取到的数据存储在category变量中
@@ -127,7 +127,7 @@ confirmBtn.addEventListener("click", function() {
     console.log(formData);
 
     // send post request
-    fetch("http://127.0.0.1:80/category/add", {
+    fetch(url+"/category/add", {
         method: "POST",
         headers: {
             "Content-Type": "application/json"
@@ -170,7 +170,7 @@ confirmEditBtn.addEventListener("click", function() {
     var xhr = new XMLHttpRequest();
 
     // 定义请求方法、URL和是否异步
-    xhr.open("POST", "http://127.0.0.1:80/category/update", true);
+    xhr.open("POST", url+"/category/update", true);
 
     // 设置请求头，指定发送的数据类型为JSON
     xhr.setRequestHeader("Content-Type", "application/json");
@@ -196,7 +196,7 @@ deleteConfirmButton.addEventListener('click', function() {
     //获取这一行的catid
 
     // 发送HTTP DELETE请求到后端接口
-    fetch('http://127.0.0.1:80/category/delete/' + deleteCatId, {
+    fetch(url+'/category/delete/' + deleteCatId, {
         method: 'DELETE'
     })
         .then(function(response) {

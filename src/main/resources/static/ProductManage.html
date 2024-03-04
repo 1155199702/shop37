@@ -24,23 +24,28 @@
                     <th>Name</th>
                     <th>Price</th>
                     <th>Description</th>
+                    <th>image</th>
                     <th>Actions</th>
                 </tr>
                 
             </thead>
             <!-- Table body goes here -->
             <tbody id="productTableBody">
-<!--              <tr>-->
+              <tr>
 <!--                <td>1</td>-->
 <!--                  <td>101</td>-->
 <!--                  <td>Product A</td>-->
 <!--                  <td>$50</td>-->
 <!--                  <td>High-quality product</td>-->
+<!--&lt;!&ndash;                  <td>&ndash;&gt;-->
+<!--&lt;!&ndash;                      &lt;!&ndash; Thumbnail image &ndash;&gt;&ndash;&gt;-->
+<!--&lt;!&ndash;                      <img src="imgs/apple.jpg" alt="Product A Thumbnail" class="img-thumbnail" data-toggle="modal" data-target="#productImageModal">&ndash;&gt;-->
+<!--&lt;!&ndash;                  </td>&ndash;&gt;-->
 <!--                  <td>-->
 <!--                    <button type="button" class="btn btn-info" data-toggle="modal" data-target="#editProductModal" onclick="fillEditForm(this)">Edit</button>-->
 <!--                      <button type="button" class="btn btn-danger" data-toggle="modal" data-target="#deleteProductModal">Delete</button>-->
 <!--                  </td>-->
-<!--              </tr>-->
+              </tr>
             </tbody>
         </table>
     </div>
@@ -84,7 +89,7 @@
                         </div>
                         <div class="form-group">
                             <label for="productImage">Upload Image</label>
-                            <input type="file" class="form-control-file" id="productImage">
+                            <input type="file" class="form-control" id="productImage">
                         </div>
                     </form>
                 </div>
@@ -109,6 +114,7 @@
             <div class="modal-body">
                 <!-- Product Form -->
                 <form>
+
                     <div class="form-group">
                         <label for="editPID">Name</label>
                         <input type="text" class="form-control" id="editPID" disabled>
@@ -132,10 +138,11 @@
                         <label for="editProductDescription">Description</label>
                         <textarea class="form-control" id="editProductDescription" rows="3" placeholder="Enter product description"></textarea>
                     </div>
-<!--                    <div class="form-group">-->
-<!--                        <label for="productImage">Upload Image</label>-->
-<!--                        <input type="file" class="form-control-file" id="editProductImage">-->
-<!--                    </div>-->
+                    <div class="form-group">
+                        <label for="editproductImage">Upload Image</label>
+                        <img id="editProductImg" src="">
+                        <input type="file" class="form-control-file" id="editProductImage">
+                    </div>
                 </form>
             </div>
             <div class="modal-footer">

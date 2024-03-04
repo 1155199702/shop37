@@ -1,7 +1,9 @@
+let url='http://54.251.177.52:8080'
 let deletePID=null;
 //get all products
-var productURL = 'http://127.0.0.1:80/product/get';
-var categoryURL='http://127.0.0.1:80/category/get';
+
+var categoryURL=url+'/category/get';
+var productURL = url+'/product/get';
 var product;
 var category;
 fetch(productURL)
@@ -10,7 +12,6 @@ fetch(productURL)
         // 将获取到的数据存储在product变量中
         product = data;
         console.log(product);
-        console.log(product.length);
         // 在这里可以对product变量进行进一步处理或展示
         var tableBody=document.getElementById("productTableBody");
         // 遍历product数组
@@ -35,10 +36,59 @@ fetch(productURL)
             var priceCell = document.createElement("td");
             priceCell.textContent = product[i].price;
             row.appendChild(priceCell);
+
             //description
             var descriptionCell = document.createElement("td");
             descriptionCell.textContent = product[i].description;
             row.appendChild(descriptionCell);
+
+            //image
+            var imgCell = document.createElement("td");
+            var thumbnailImg = document.createElement('img');
+            //解决图片不更新的问题，加一个随机数
+            thumbnailImg.src = 'imgs/'+product[i].imgname;// Path to your thumbnail image
+
+            thumbnailImg.classList.add('img-thumbnail'); // Apply Bootstrap thumbnail styling
+            thumbnailImg.style.maxWidth="100px";
+            imgCell.appendChild(thumbnailImg);
+
+            // // Add a click event listener to the thumbnail image
+            // thumbnailImg.addEventListener('click', function() {
+            //     // Create an overlay div for the large image
+            //     var overlay = document.createElement('div');
+            //     overlay.classList.add('overlay');
+            //     overlay.style.background = 'rgba(0, 0, 0, 0.5)'; // Semi-transparent black background
+            //     overlay.style.position = 'fixed';
+            //     overlay.style.top = '0';
+            //     overlay.style.left = '0';
+            //     overlay.style.width = '100%';
+            //     overlay.style.height = '100%';
+            //     overlay.style.zIndex = '9999';
+            //
+            //     // Create the large image
+            //     var largeImg = document.createElement('img');
+            //     largeImg.src = 'imgs/'+product[i].imgname; // Same path as the thumbnail image
+            //     largeImg.style.maxWidth = '60%'; // Adjust the size as needed
+            //     largeImg.style.position = 'absolute';
+            //     largeImg.style.top = '50%';
+            //     largeImg.style.left = '50%';
+            //     largeImg.style.transform = 'translate(-50%, -50%)';
+            //
+            //     // Append the large image to the overlay
+            //     overlay.appendChild(largeImg);
+            //
+            //     // Add a click event listener to the overlay (to close it)
+            //     overlay.addEventListener('click', function() {
+            //         document.body.removeChild(overlay); // Remove the overlay
+            //     });
+            //
+            //     // Append the overlay to the body
+            //     document.body.appendChild(overlay);
+            // });
+
+// Append the imgCell to your table row
+            row.appendChild(imgCell);
+
 
             //action column
             var actionsCell = document.createElement("td");
@@ -91,6 +141,21 @@ fetch(productURL)
         console.error('Error:', error);
     });
 
+// function showLargeImage(img) {
+//     // Assuming the large image path is also "imgs/apple.jpg"
+//     var largeImagePath = "imgs/apple.jpg";
+//     img.src = largeImagePath;
+//     img.classList.add("large-image");
+// }
+//
+// // Function to hide large image on mouseout
+// function hideLargeImage(img) {
+//     // Restore the thumbnail image path
+//     img.src = "imgs/apple.jpg";
+//     img.classList.remove("large-image");
+// }
+
+
 //get all categories
 fetch(categoryURL)
     .then(response => response.json()) // 将响应解析为JSON格式
@@ -130,6 +195,18 @@ addProductButton.addEventListener("click", function(){
 
 //add a product
 var confirmBtn = document.getElementById("confirmAdd");
+//product image
+var fileInput = document.getElementById('productImage');
+let imgFile=undefined;
+let fileExtension = undefined;
+// 添加change事件监听器
+fileInput.addEventListener('change', (event) => {
+    imgFile = event.target.files[0];
+    let fileName= imgFile.name;
+    fileExtension=fileName.split('.').pop();
+    console.log('File:', imgFile);
+    console.log(imgFile.name);
+});
 
 confirmBtn.addEventListener("click", function() {
     // get the value of form
@@ -138,24 +215,47 @@ confirmBtn.addEventListener("click", function() {
     var productName = document.getElementById("productName").value;
     var productPrice = document.getElementById("productPrice").value;
     var productDescription = document.getElementById("productDescription").value;
+    let now= new Date().getTime();
+    let imgFileName= productName+now+"."+fileExtension;
+
+    var allowedExtensions = /(\.jpg|\.gif|\.png)$/i; // 合法的文件后缀正则表达式
+    var maxSize = 10 * 1024 * 1024; // 最大文件大小限制，10MB
+
+    if (!allowedExtensions.test(imgFile.name)) {
+        // 文件后缀不符合要求
+        alert('只允许上传jpg、gif和png格式的文件');
+        fileInput.value = ''; // 清空文件输入框
+        return;
+    }
+
+    if (fileExtension.size > maxSize) {
+        // 文件大小超过限制
+        alert('文件大小不能超过10MB');
+        fileInput.value = ''; // 清空文件输入框
+        return;
+    }
+
     // construct form data
     var formData = {
         pid: pid,
         catid: catId,
         name: productName,
         price: productPrice,
-        description:productDescription
-
+        description:productDescription,
+        imgname:imgFileName,
     };
-    console.log(formData);
 
+    const productForm = new FormData();
+    productForm.append('product',JSON.stringify(formData));
+    productForm.append('imgFile',imgFile);
+    console.log(productForm)
     // send post request to add product
-    fetch("http://127.0.0.1:80/product/add", {
+    fetch(url+"/product/add", {
         method: "POST",
         headers: {
-            "Content-Type": "application/json"
+           // "Content-Type": "application/json"
         },
-        body: JSON.stringify(formData)
+        body: productForm
     })
         .then(function(response) {
             if (response.ok) {
@@ -170,8 +270,6 @@ confirmBtn.addEventListener("click", function() {
             console.log("发生错误:", error);
         });
 });
-
-
 
 
 function fillEditForm(button) {
@@ -190,6 +288,7 @@ function fillEditForm(button) {
     var productName = tableRow.cells[2].innerHTML;
     var productPrice = tableRow.cells[3].innerHTML;
     var productDescription = tableRow.cells[4].innerHTML;
+    var productImage= tableRow.cells[5].innerHTML;
 
     // Set the values in the edit modal form
     pidElement.value=PID;
@@ -221,13 +320,13 @@ editButton.addEventListener("click", function() {
         catid: catId,
         name: productName,
         price: productPrice,
-        description:productDescription
+        description:productDescription,
 
     };
     console.log(formData);
 
     // send post request to add product
-    fetch("http://127.0.0.1:80/product/update", {
+    fetch(url+"/product/update", {
         method: "POST",
         headers: {
             "Content-Type": "application/json"
@@ -247,15 +346,16 @@ editButton.addEventListener("click", function() {
             console.log("发生错误:", error);
         });
 });
-
+//category of the t
 //delete product
-//调用后端接口提交删除
-//delete category
+//调用后端接口提交删
+
+
 var deleteConfirmButton=document.getElementById('confirmDelete');
 deleteConfirmButton.addEventListener('click', function() {
 
     // 发送HTTP DELETE请求到后端接口
-    fetch('http://127.0.0.1:80/product/delete/' + deletePID, {
+    fetch(url+'/product/delete/' + deletePID, {
         method: 'DELETE'
     })
         .then(function(response) {
